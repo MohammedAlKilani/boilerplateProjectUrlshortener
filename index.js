@@ -22,7 +22,7 @@ app.get('/api/hello', function(req, res) {
 });
 let urlArry =[]
 app.post("/api/shorturl",(req,res)=>{
-  console.log(req.body.url)
+  // console.log(req.body.url)
   
    const urlObject = new URL(req.body.url);
   dns.lookup(urlObject.hostname,(err,val)=>{
@@ -30,21 +30,24 @@ app.post("/api/shorturl",(req,res)=>{
       res.json({ error: 'invalid url' }) 
       return
     }
-     let shortenedURL =parseInt(Math.floor(Math.random() * 100000)) 
-    urlArry.push({original_url:req.body.url,short_url:shortenedURL})
-    console.log(urlArry)
-    res.json({original_url:req.body.url,short_url:shortenedURL})
+     let shortenedURL =parseInt(Math.floor(Math.random() * 10))
+    urlArry.push({original_url:urlObject.href,short_url:shortenedURL})
+    // console.log(urlArry)
+    res.json({original_url:urlObject.href,short_url:shortenedURL})
   })
   
 })
 
-app.get("/api/shorturl/:short_url",(req,res)=>{
-let url = urlArry.find((url)=>{
-   return url.short_url= req.params.short_url
+app.get("/api/shorturl/:short_url",async(req,res)=>{
+let url = await urlArry.find((url)=>{
+   return url.short_url== req.params.short_url
   })
+  console.log(url)
   if(url){
-    console.log(url)
-    res.redirect(url.original_url)
+    // console.log(url.original_url)
+    // console.log(new URL(url.original_url))
+    let newUrl =url.original_url
+    res.redirect(newUrl )
 
   }
   
